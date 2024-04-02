@@ -1,0 +1,12 @@
+numpy 
+onnxruntime==1.17.0
+opencv-python==4.9.0.80
+onnx==1.15.0
+timm==0.9.12
+fvcore==0.1.5.post20220414
+tqdm
+tensorboardX==2.2
+protobuf==3.20.*
+pillow
+torch
+torchvision
