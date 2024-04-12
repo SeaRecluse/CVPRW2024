@@ -69,7 +69,6 @@ def get_score(img_path, model, use_tta=True):
 
     return score
 
-
 def get_img_paths(load_dir):
     image_extensions = ['.jpg', '.png', '.jpeg', '.gif', '.bmp']
     load_img_list = []
@@ -83,7 +82,6 @@ def get_img_paths(load_dir):
 
 
     return load_img_list
-
 
 def get_dim_idx(score_list, th):
     """
@@ -189,7 +187,6 @@ def accuracy_detailed(roc_n_list, roc_p_list, fpr_list=[1e-10, 1e-4, 1e-3, 1e-2]
 
     return roc_info, roc_dict
 
-
 def is_triangle(a, b, c):
     if a + b > c and a + c > b and b + c > a:
         return True
@@ -197,7 +194,7 @@ def is_triangle(a, b, c):
         return False
     
 def calculate_sides(a, b, c):
-    BD, CD = b, c
+    BD, CD = c, b
     if is_triangle(a, b, c):
         cosB = (a ** 2 + c ** 2 - b ** 2) / (2 * a * c)
         cosC = (a ** 2 + b ** 2 - c ** 2) / (2 * a * b)
@@ -228,76 +225,6 @@ def get_mid_mean(score_array):
     s = (mean - np.min(score_array)) / (np.max(score_array) -mean)
     return mean, s
 
-def get_balance_mean(score_array):
-    scores_sorted = np.sort(score_array)
-    all_sum = np.sum(scores_sorted)
-    all_nums = len(scores_sorted)
-    idx = 0
-    left_sum = 0
-    for n in range(1, all_nums - 1):
-        score = scores_sorted[n]
-        left_sum += score
-        right_sum = all_sum - left_sum
-        if n * score - left_sum >= right_sum - (all_nums - n) * score:
-            idx = n - 1
-            break
-
-    mean = scores_sorted[idx]
-    s = (mean - np.min(score_array)) / (np.max(score_array) -mean)
-    return mean, s
-
-def get_balance_addweight_mean(score_array):
-    scores_sorted = np.sort(score_array)
-    all_sum = np.sum(scores_sorted)
-    all_square_sum = np.sum(np.square(scores_sorted))
-    all_nums = len(scores_sorted)
-    idx = 0
-    left_sum = 0
-    left_square_sum = 0
-    for n in range(1, all_nums - 1):
-        score = scores_sorted[n]
-        
-        left_sum += score
-        left_square_sum += score ** 2
-    
-        right_sum = all_sum - left_sum
-        right_square_sum = all_square_sum - left_square_sum 
-        
-        if left_sum * score - left_square_sum >= right_square_sum - right_sum * score:
-            idx = n - 1
-            break
-
-    mean = scores_sorted[idx]
-    s = (mean - np.min(score_array)) / (np.max(score_array) -mean)
-    return mean, s
-
-def get_balance_threshold(p_scores, n_scores, p_border, n_border):
-    if p_border >  n_border:
-        p_slice = p_scores
-        n_slice = n_scores
-        th_list = [(p_border - (p_border - n_border) / n) for n in range(1, 100)]
-    else:
-        n_slice= p_scores[p_scores < n_border]
-        p_slice = n_scores[n_scores > p_border]
-        th_list = np.unique(np.concatenate((p_slice, n_slice)))
-    
-    idx = 0
-    for th in th_list:
-        left_sum = 0
-        right_sum = 0
-        for n_score in n_slice:
-            left_sum += (th - n_score)
-        for p_score in p_slice:
-            right_sum += (p_score - th)
-        left_sum /= n_slice.size
-        right_sum /= p_slice.size
-        if left_sum >= right_sum:
-            break
-        idx += 1
-    if idx == len(th_list):
-        return p_border
-    return th_list[idx]
- 
 def get_balance_mean(score_array):
     scores_sorted = np.sort(score_array)
     all_sum = np.sum(scores_sorted)
