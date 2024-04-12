@@ -286,8 +286,7 @@ def get_balance_threshold(p_scores, n_scores, p_border, n_border):
             left_sum += (th - n_score)
         for p_score in p_slice:
             right_sum += (p_score - th)
-        left_sum /= n_slice.size
-        right_sum /= p_slice.size
+
         if left_sum >= right_sum:
             break
         idx += 1
