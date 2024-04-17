@@ -161,9 +161,9 @@ def accuracy_detailed(roc_n_list, roc_p_list, fpr_list=[1e-10, 1e-4, 1e-3, 1e-2]
     bpcer = 0
     acer = 0
     acer_th = 0
-    for n_idx in tqdm(range(n_nums)):
-        frr = (n_idx - 1) / n_nums
-        far = get_dim_idx(roc_p_list, roc_n_list[n_idx - 1]) / p_nums
+    for n_idx in tqdm(range(n_nums - 1)):
+        frr = (n_idx) / n_nums
+        far = get_dim_idx(roc_p_list, roc_n_list[n_idx]) / p_nums
         
         apcer = far
         bpcer = frr
@@ -368,8 +368,8 @@ def draw_area(p_scores, n_scores, th_acer, save_path, t_tag="Real Face", f_tag="
     plt.axvline(x=th_cross, color='orange', linestyle='--', label='The Cross threshold: {}'.format(round(th_cross, 5)))
     plt.axvline(x=th_acer, color='green', linestyle='--', label='The ACER threshold: {}'.format(round(th_acer, 5)))
 
-    plt.axvline(x=th_p_border * 0.99, color='purple', linestyle='--', label='The border of live face: {}'.format(round(th_p_border, 5)))
-    plt.axvline(x=th_n_border * 1.01, color='pink', linestyle='--', label='The border of fake face: {}'.format(round(th_n_border, 5)))
+    plt.axvline(x=th_p_border * 0.999, color='purple', linestyle='--', label='The border of live face: {}'.format(round(th_p_border, 5)))
+    plt.axvline(x=th_n_border * 1.001, color='pink', linestyle='--', label='The border of fake face: {}'.format(round(th_n_border, 5)))
 
     plt.legend(fontsize=fontsize)
     
